@@ -5,10 +5,13 @@ import edu.miu.cs.cs489.lesson7.adsapp.dto.patient.PatientResponse;
 import edu.miu.cs.cs489.lesson7.adsapp.service.PatientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@PreAuthorize("hasRole('ADMIN')")
+//@PreAuthorize("hasRole('ADMIN')") // ✅ Restrict the whole controller to ADMINs
 @RestController
 @RequestMapping("/adsweb/api/v1/patients")
 public class PatientController {
@@ -18,6 +21,24 @@ public class PatientController {
     public PatientController(PatientService patientService) {
         this.patientService = patientService;
     }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<String> whoAmI() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return ResponseEntity.status(401).body("Not authenticated");
+        }
+
+        var name = auth.getName();
+        var roles = auth.getAuthorities().toString();
+
+        return ResponseEntity.ok("Username: " + name + ", Roles: " + roles);
+    }
+
+
+
+
 
     @GetMapping
     public ResponseEntity<List<PatientResponse>> getAllPatients() {

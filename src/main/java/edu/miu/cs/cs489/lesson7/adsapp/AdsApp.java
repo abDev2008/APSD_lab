@@ -15,6 +15,7 @@ public class AdsApp {
     @Bean
     CommandLineRunner commandLineRunner() {
         return (args) -> {
+
             System.out.println("Hello RESTful Web API");
             System.out.println("CityLibrary WebAPI server. Starting...");
             System.out.println("CityLibrary WebAPI server. Started.\nRunning Apache Tomcat service and Listening for HTTP Request on Port number, 8080");
